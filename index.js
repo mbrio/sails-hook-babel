@@ -13,19 +13,13 @@ module.exports = function(sails) {
     defaults: {
 
       __configKey__: {
-        // Turn babel compile on by default
-        compile: true,
-        //Activates experimental functionality such as ES7 async/await
-        stage: 2,
-        //See http://babeljs.io/docs/usage/loose
-        //Can be "all", false or a an array, e.g. ["es6.classes", "es6.properties.computed"]
-        loose: "all",
+        presets: ['es2015', 'stage-3'],
         //can be false or a regex. Defaults to node_modules in babel
         ignore: null,
         //can be any regex. Only these files will be transpiled
         only: null,
-        //an array of extensions, defaults to [".es6", ".es", ".jsx", ".js"] in babel
-        extensions: null
+        //an array of plugins
+        plugins: null
       }
     },
 
@@ -44,8 +38,7 @@ module.exports = function(sails) {
         //such as async/await.
 
         var options = {
-          loose: sails.config[this.configKey].loose,
-          stage: sails.config[this.configKey].stage
+          presets: sails.config[this.configKey].presets
         };
 
         if (sails.config[this.configKey].ignore !== null) {
@@ -56,11 +49,11 @@ module.exports = function(sails) {
           options.only = sails.config[this.configKey].only;
         }
 
-        if (sails.config[this.configKey].extensions) {
-          options.extensions = sails.config[this.configKey].extensions;
+        if (sails.config[this.configKey].plugins) {
+          options.plugins = sails.config[this.configKey].plugins;
         }
 
-        require("babel/register")(options);
+        require("babel-register")(options);
 
 
         sails.log.verbose("Babel hook activated. Enjoy ES6/7 power in your Sails app.");
